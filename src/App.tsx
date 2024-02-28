@@ -1,15 +1,14 @@
-import styled from 'styled-components';
 import './App.css';
-
-const Title = styled.h1`
-  font-size: 1.5em;
-  text-align: center;
-  color: #BF4F74;
-`;
+import Header from './components/Header';
+import CalendarView from './components/CalendarView';
 
 function App() {
   return (
-    <Title>Calendar App</Title>
+    <>
+      <Header />
+
+      <CalendarView />
+    </>
   )
 }
 
