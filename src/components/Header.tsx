@@ -1,63 +1,30 @@
-import { useContext } from 'react';
 import styled from 'styled-components';
-import { CalendarContext } from './CalendarContext';
+import { FilterBar } from './FilterBar';
+import { ChangeMonthSection } from './ChangeMonthSection';
+import { useState } from 'react';
+import { AddTagBar } from './AddTagBar';
 
 const HeaderContainer = styled.header`
   width: 100%;
-  padding-inline: 40px;
-  height: 50px;
+  padding: 10px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: antiquewhite;
+  background-color: #FD9F01;
 `;
 
-const ViewBar = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-
-const ActionsBar = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: baseline;
-`;
-
-function Header() {
-  const { monthVisible, changeMonthVisible } = useContext(CalendarContext);
+export const Header = () => {
+  const [isBarOpen, setIsBarOpen] = useState(false);
 
   return (
-    <HeaderContainer>
-      <ActionsBar>
-        <h2>Calendar</h2>
-        <p>import/export</p>
-      </ActionsBar>
+    <>
+      <HeaderContainer>
+        <ChangeMonthSection />
 
-      <ViewBar>
-        <button
-          disabled={monthVisible === 0}
-          onClick={() => changeMonthVisible(monthVisible - 1)}
-        >
-          Prev
-        </button>
+        <FilterBar isBarOpen={isBarOpen} setIsOpen={setIsBarOpen} />
+      </HeaderContainer>
 
-        <p>Month</p>
-
-        <button
-          disabled={monthVisible === 11}
-          onClick={() => changeMonthVisible(monthVisible + 1)}
-        >
-          Next
-        </button>
-      </ViewBar>
-    </HeaderContainer>
+      {isBarOpen && <AddTagBar setIsOpen={setIsBarOpen} />}
+    </>
   )
 }
-
-// viewbar will control view(month/week)
-// and prev/next buttons
-// actionsbar will control export/import and search
-// on hover on cell will appear + button and modal to add todo
-// week start (monday/sunday) button
-
-export default Header;

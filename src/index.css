@@ -7,3 +7,9 @@
 body {
   min-height: 100vh;
 }
+
+:root {
+  font-family: "Montserrat", sans-serif;
+  font-style: normal;
+  background-color: #EEEFF1;
+}

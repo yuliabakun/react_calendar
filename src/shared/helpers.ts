@@ -1,4 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
+import { monthArray } from './data';
+import { weekdaysFull } from './data';
 
 export function getMonthToRender(month: number, year: number) {
   const date = new Date(year, month, 1);
@@ -18,15 +20,14 @@ export function getMonthToRender(month: number, year: number) {
   return days;
 }
 
-
-export function getMonthToRender2(month: number, year: number) {
+export function generateMonthToRender(month: number, year: number) {
   const days = [];
   const firstDayOfMonth = new Date(year, month, 1);
   const lastDayOfMonth = new Date(year, month + 1, 0);
-  
+
   const monday = new Date(firstDayOfMonth);
   monday.setDate(firstDayOfMonth.getDate() - firstDayOfMonth.getDay() + 1);
-  
+
   const sunday = new Date(lastDayOfMonth);
   sunday.setDate(lastDayOfMonth.getDate() - lastDayOfMonth.getDay() + 7);
 
@@ -46,4 +47,12 @@ export function getMonthToRender2(month: number, year: number) {
   }
 
   return days;
+}
+
+export function getDateToRender(date: Date | null) {
+  if (date) {
+    return `${weekdaysFull[date.getDay()]} ${date.getDate()} ${monthArray[date.getMonth()]}`;
+  } else {
+    return 'today';
+  }
 }

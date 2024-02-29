@@ -1,58 +1,71 @@
 import styled from 'styled-components';
-import { daysOfWeek } from '../shared/data';
-import { useContext } from 'react';
-import { CalendarContext } from './CalendarContext';
-import { monthArray } from '../shared/data';
+import { useEffect, useState } from 'react';
+import { AddTaskModal } from './AddTaskModal';
+import { CalendarItem } from './CalendarItem';
+import { useAppSelector } from '../shared/globalState/hooks';
+import { WeekdaysBar } from './WeekdaysBar';
+import { getHolidaysForUpcomingWeek } from '../shared/fetchClient';
+import { Holiday } from '../shared/types';
 
 const CalendarGrid = styled.main`
-  margin: 10px;
+  margin: 0 5px 60px 5px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 5px;
 `;
 
-const CalendarBar = styled.div`
-  margin: 10px;
-  display: flex;
-  justify-content: space-around;
-`;
+export const CalendarView = () => {
+  const { month } = useAppSelector(state => state.calendar);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [holidaysData, setHolidaysData] = useState<Holiday[]>([]);
 
-interface CalendarCellProp {
-  isCurrentMonth: boolean,
-}
+  useEffect(() => {
+    const getHolidaysData = async () => {
+      const data = await getHolidaysForUpcomingWeek();
 
-const CalendarCell = styled.section<CalendarCellProp>`  
-  grid-column: span 1;
-  background-color: ${props => props.isCurrentMonth ? 'lightblue' : 'white'};
-  height: 120px;
-`;
+      setHolidaysData(data);
+    }
 
-function CalendarView() {
-  const { month } = useContext(CalendarContext);
+    getHolidaysData();
+  }, []);
 
-  const getDateToRender = (date: Date) => {
-    const str = `${date.getDate()}-${monthArray[date.getMonth()]}`;
-    return str;
-  }
+  const prepareMonthDataToRender = () => {
+    const holidaysArray = holidaysData.flat();
+
+    const preparedData = month.map(day => {
+      const monthStr = (day.date.getMonth() + 1).toString().padStart(2, '0');
+      const dayStr = day.date.getDate().toString().padStart(2, '0');
+      const dateToCompare = `${day.date.getFullYear()}-${monthStr}-${dayStr}`;
+
+      const holidaysForDay = holidaysArray.filter(holiday => holiday.date === dateToCompare);
+
+      return {
+        ...day,
+        holidays: holidaysForDay
+      };
+    })
+
+    return preparedData;
+  };
+
+  const monthWithHolidays = prepareMonthDataToRender();
 
   return (
     <>
-      <CalendarBar>
-        {daysOfWeek.map(day => <p key={day}>{day}</p>)}
-      </CalendarBar>
+      <AddTaskModal open={isModalOpen} setIsModalOpen={setIsModalOpen} />
+
+      <WeekdaysBar />
 
       <CalendarGrid>
-        {month.map(item => (
-          <CalendarCell
+        {monthWithHolidays.map(item => (
+          <CalendarItem
             key={item.id}
-            isCurrentMonth={item.isTargetMonth}
-          >
-            {getDateToRender(item.date)}
-          </CalendarCell>
+            item={item}
+            setIsModalOpen={setIsModalOpen}
+            holidays={item.holidays}
+          />
         ))}
       </CalendarGrid>
     </>
   )
 }
-
-export default CalendarView;

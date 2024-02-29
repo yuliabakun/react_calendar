@@ -1,32 +1,31 @@
 export type Tag = {
   id: string,
   name: string,
+  color: string,
 }
 
-export type Todo = {
+export type Task = {
   id: string,
-  assign_date: string,
-  task: string,
-  tags: Tag[],
+  description: string,
+  assign_date: Date | null,
+  tags: string[],
 }
 
 export type Day = {
   id: string,
   date: Date,
   isTargetMonth: boolean,
+  holidays: Holiday[],
 }
 
-export type TodoContext = {
-  todos: Todo[],
-  addNewTodo: (value: Todo) => void,
-};
-
-export type CalendarContextProp = {
-  monthVisible: number,
-  changeMonthVisible: (v: number) => void,
-  month: Day[];
-};
-
-export type ProviderProps = {
-  children: React.ReactNode,
+export type Holiday = {
+  date: string;
+  localName: string;
+  name: string;
+  countryCode: string;
+  fixed: boolean;
+  global: boolean;
+  counties: string[];
+  launchYear: number | null;
+  types: string[];
 };

@@ -1,17 +1,14 @@
 import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { store } from './shared/globalState/store.ts';
 import App from './App.tsx';
-import { ContextProvider } from './components/TodosContext.tsx';
-import { CalendarContextProvider } from './components/CalendarContext.tsx';
-
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <CalendarContextProvider>
-      <ContextProvider>
-        <App />
-      </ContextProvider>
-    </CalendarContextProvider>
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
 );
