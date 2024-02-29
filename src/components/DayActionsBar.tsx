@@ -60,7 +60,7 @@ export const DayActionsBar: React.FC<Props> = ({ day, onModalOpen }) => {
 
       {day.isTargetMonth && (
         <DayInfoContainer>
-          {day.holidays.length > 0 &&
+          {day.holidays && day.holidays.length > 0 &&
             day.holidays.map(holiday => (
               <HolidayIcon
                 key={holiday.localName}

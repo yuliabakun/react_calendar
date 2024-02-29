@@ -15,7 +15,7 @@ export type Day = {
   id: string,
   date: Date,
   isTargetMonth: boolean,
-  holidays: Holiday[],
+  holidays?: Holiday[],
 }
 
 export type Holiday = {
