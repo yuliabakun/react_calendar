@@ -100,7 +100,7 @@ export const TaskItem: React.FC<Props> = ({ task, onTaskDelete }) => {
 
       return (
         <TagsContainer>
-          {tags.map(tag => <TagItem tag={tag} />)}
+          {tags.map(tag => <TagItem key={tag.id} tag={tag} />)}
         </TagsContainer>
       );
     } else {

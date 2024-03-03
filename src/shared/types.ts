@@ -16,6 +16,7 @@ export type Day = {
   date: Date,
   isTargetMonth: boolean,
   holidays?: Holiday[],
+  items: Task[],
 }
 
 export type Holiday = {
@@ -29,3 +30,11 @@ export type Holiday = {
   launchYear: number | null;
   types: string[];
 };
+
+export type DayListItem = {
+  id: string,
+  date: Date,
+  isTargetMonth: boolean,
+  holidays?: Holiday[],
+  items: Task[],
+}

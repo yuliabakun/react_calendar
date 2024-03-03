@@ -46,6 +46,9 @@ const taskSlice = createSlice({
 
       state.tasks = newTasks;
     },
+    addTasksFromFile: (state, action) => {
+      state.tasks = [...state.tasks, ...action.payload];
+    },
     setSelectedDate: (state, action) => {
       state.selectedDate = action.payload;
     },
@@ -55,5 +58,5 @@ const taskSlice = createSlice({
   },
 });
 
-export const { addNewTask, updateTask, deleteTaskById, setSelectedDate, setSearchQuery } = taskSlice.actions;
+export const { addNewTask, updateTask, deleteTaskById, addTasksFromFile, setSelectedDate, setSearchQuery } = taskSlice.actions;
 export default taskSlice.reducer;
