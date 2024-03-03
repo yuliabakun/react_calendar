@@ -2,25 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { monthArray } from './data';
 import { weekdaysFull } from './data';
 
-export function getMonthToRender(month: number, year: number) {
-  const date = new Date(year, month, 1);
-
-  const days = [];
-
-  while (date.getMonth() === month) {
-    const day = {
-      id: uuidv4(),
-      date: new Date(date),
-    }
-
-    days.push(day);
-    date.setDate(date.getDate() + 1);
-  }
-
-  return days;
-}
-
-export function generateMonthToRender(month: number, year: number) {
+export const generateMonthToRender = (month: number, year: number) => {
   const days = [];
   const firstDayOfMonth = new Date(year, month, 1);
   const lastDayOfMonth = new Date(year, month + 1, 0);
@@ -40,6 +22,7 @@ export function generateMonthToRender(month: number, year: number) {
       id: uuidv4(),
       date: new Date(currentDate),
       isTargetMonth: isTargetMonth,
+      items: [],
     };
 
     days.push(day);
@@ -47,12 +30,27 @@ export function generateMonthToRender(month: number, year: number) {
   }
 
   return days;
-}
+};
 
-export function getDateToRender(date: Date | null) {
+export const getDateToRender = (date: Date | null) => {
   if (date) {
     return `${weekdaysFull[date.getDay()]} ${date.getDate()} ${monthArray[date.getMonth()]}`;
   } else {
-    return 'today';
+    return '';
   }
-}
+};
+
+export const compareDates = (taskDate: Date, cellDate: Date) => {
+  const taskAssigned = `${taskDate.getDate()}-${taskDate.getMonth()}`;
+  const currentDate = `${cellDate.getDate()}-${cellDate.getMonth()}`;
+
+  return taskAssigned === currentDate;
+};
+
+export const compareDatesWithCast = (holidayDate: string, taskDate: Date) => {
+  const monthStr = (taskDate.getMonth() + 1).toString().padStart(2, '0');
+  const dayStr = taskDate.getDate().toString().padStart(2, '0');
+  const dateToCompare = `${taskDate.getFullYear()}-${monthStr}-${dayStr}`;
+
+  return dateToCompare === holidayDate;
+};

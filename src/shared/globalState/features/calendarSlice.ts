@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Day } from '../../types';
 import { generateMonthToRender } from '../../helpers';
+import { CalendarYear } from '../../data';
+import { Day } from '../../types';
 
 interface InitialState {
   monthVisible: number,
@@ -18,7 +19,7 @@ const calendarSlice = createSlice({
   reducers: {
     changeMonthVisible: (state, action) => {
       state.monthVisible = action.payload;
-      state.month = generateMonthToRender(action.payload, 2024);
+      state.month = generateMonthToRender(action.payload, CalendarYear);
     },
   },
 });

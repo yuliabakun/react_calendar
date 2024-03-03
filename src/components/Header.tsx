@@ -3,9 +3,10 @@ import { FilterBar } from './FilterBar';
 import { ChangeMonthSection } from './ChangeMonthSection';
 import { useState } from 'react';
 import { AddTagBar } from './AddTagBar';
-import { useAppDispatch, useAppSelector } from '../shared/globalState/hooks';
-import { Task } from '../shared/types';
+import { useAppDispatch } from '../shared/globalState/hooks';
+import { HeaderProps, Task } from '../shared/types';
 import { addTasksFromFile } from '../shared/globalState/features/taskSlice';
+import { ExportImportBar } from './ExportImportBar';
 
 const HeaderContainer = styled.header`
   width: 100%;
@@ -16,27 +17,9 @@ const HeaderContainer = styled.header`
   background-color: #FD9F01;
 `;
 
-const ActionsBar = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-
-const Button = styled.button`
-  padding: 8px 5px;
-  background: #EFEFEE4C;
-  border: 1px solid #E9E2D64C;
-  border-radius: 3px;
-  cursor: pointer;
-`;
-
-type Props = {
-  handlePdfExport: () => void,
-}
-
-export const Header: React.FC<Props> = ({ handlePdfExport }) => {
-  const [isBarOpen, setIsBarOpen] = useState(false);
-  const { tasks } = useAppSelector(state => state.tasks);
+export const Header: React.FC<HeaderProps> = ({ handlePdfExport }) => {
   const dispatch = useAppDispatch();
+  const [isBarOpen, setIsBarOpen] = useState(false);
 
   const handleJsonExport = (data: Task[], type: string) => {
     const dataToLoad = JSON.stringify(data);
@@ -48,14 +31,6 @@ export const Header: React.FC<Props> = ({ handlePdfExport }) => {
     a.download = 'Json tasks';
     a.click();
     window.URL.revokeObjectURL(url);
-  };
-
-  const dateReviver = (key, value) => {
-    if (key === 'assign_date') {
-      return new Date(value);
-    }
-
-    return value;
   }
 
   const handleJsonImport = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +38,7 @@ export const Header: React.FC<Props> = ({ handlePdfExport }) => {
 
     fileReader.onload = (event) => {
       try {
-        const jsonTasks = JSON.parse(event.target.result as string, dateReviver);
+        const jsonTasks = JSON.parse(event.target?.result as string, dateReviver);
 
         dispatch(addTasksFromFile(jsonTasks));
       } catch (error) {
@@ -75,26 +50,25 @@ export const Header: React.FC<Props> = ({ handlePdfExport }) => {
       const file = event.target.files[0];
       fileReader.readAsText(file);
     }
-  };
+  }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const dateReviver = (key: any, value: any) => {
+    if (key === 'assign_date') {
+      return new Date(value);
+    }
+
+    return value;
+  }
 
   return (
     <>
       <HeaderContainer>
-        <ActionsBar>
-          <Button onClick={handlePdfExport}>Export PDF</Button>
-
-          <Button onClick={() => handleJsonExport(tasks, 'application/json')}>
-            Export JSON
-          </Button>
-
-          <input
-            type="file"
-            accept=".json"
-            onChange={handleJsonImport}
-          />
-
-        </ActionsBar>
+        <ExportImportBar
+          handleJsonExport={handleJsonExport}
+          handleJsonImport={handleJsonImport}
+          handlePdfExport={handlePdfExport}
+        />
 
         <ChangeMonthSection />
 

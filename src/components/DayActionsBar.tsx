@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Day } from '../shared/types';
+import { DayActionsBarProps } from '../shared/types';
 import { useAppDispatch } from '../shared/globalState/hooks';
 import { setSelectedDate } from '../shared/globalState/features/taskSlice';
 import iconStarred from '../shared/assets/icon-starred.svg';
@@ -44,12 +44,7 @@ const DayInfoContainer = styled.div`
   gap: 2px;
 `;
 
-type Props = {
-  day: Day,
-  onModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-};
-
-export const DayActionsBar: React.FC<Props> = ({ day, onModalOpen }) => {
+export const DayActionsBar: React.FC<DayActionsBarProps> = ({ day, onModalOpen }) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -63,7 +58,7 @@ export const DayActionsBar: React.FC<Props> = ({ day, onModalOpen }) => {
           {day.holidays && day.holidays.length > 0 &&
             day.holidays.map(holiday => (
               <HolidayIcon
-                key={holiday.localName}
+                key={holiday.date}
                 src={iconStarred}
                 title={`${holiday.name} in ${holiday.countryCode}`}
               >

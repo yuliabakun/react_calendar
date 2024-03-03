@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { Task } from '../shared/types';
+import { TaskItemProps } from '../shared/types';
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../shared/globalState/hooks';
-import { updateTask } from '../shared/globalState/features/taskSlice';
+import { deleteTaskById, updateTask } from '../shared/globalState/features/taskSlice';
 import { TagItem } from './TagItem';
 import iconClose from '../shared/assets/icon-plus-gray.svg';
 import iconEdit from '../shared/assets/icon-edit.svg';
@@ -59,21 +59,12 @@ const Icon = styled.img`
   height: 10px;
 `;
 
-type Props = {
-  task: Task,
-  onTaskDelete: (v: string) => void,
-};
-
-export const TaskItem: React.FC<Props> = ({ task, onTaskDelete }) => {
+export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   const dispatch = useAppDispatch();
   const { tagsCreated } = useAppSelector(state => state.tag);
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(task.description);
   const [isHovered, setIsHovered] = useState(false);
-
-  const handleOnDrag = (e: React.DragEvent, task: string) => {
-    e.dataTransfer.setData('currentTask', task);
-  };
 
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const pressedKey = event.key;
@@ -122,8 +113,6 @@ export const TaskItem: React.FC<Props> = ({ task, onTaskDelete }) => {
         </Container>
       ) : (
         <Container
-          draggable
-          onDragStart={(event) => handleOnDrag(event, JSON.stringify(task))}
           onMouseOver={() => setIsHovered(true)}
           onMouseOut={() => setIsHovered(false)}
         >
@@ -138,7 +127,7 @@ export const TaskItem: React.FC<Props> = ({ task, onTaskDelete }) => {
                   <Icon src={iconEdit} />
                 </ControlButton>
 
-                <ControlButton onClick={() => onTaskDelete(task.id)}>
+                <ControlButton onClick={() => dispatch(deleteTaskById(task.id))}>
                   <IconClose src={iconClose} />
                 </ControlButton>
               </div>

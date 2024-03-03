@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
-import { useAppSelector } from '../shared/globalState/hooks';
+import { useAppDispatch, useAppSelector } from '../shared/globalState/hooks';
 import { getHolidaysForUpcomingWeek } from '../shared/fetchClient';
-import { Holiday, DayListItem, Task } from '../shared/types';
+import { Holiday, DayListItem } from '../shared/types';
 import { AddTaskModal } from './AddTaskModal';
-import { CalendarItem } from './CalendarItem';
 import { WeekdaysBar } from './WeekdaysBar';
-import ReorderableList from './ReorderableLists';
+import { ReorderableList } from './ReorderableLists';
+import { compareDates, compareDatesWithCast } from '../shared/helpers';
+import { updateTask } from '../shared/globalState/features/taskSlice';
 
 const CalendarGrid = styled.main`
   margin: 0 5px 60px 5px;
@@ -16,83 +17,78 @@ const CalendarGrid = styled.main`
 `;
 
 export const CalendarView = () => {
+  const dispatch = useAppDispatch();
   const { month } = useAppSelector(state => state.calendar);
-  const { tasks } = useAppSelector(state => state.tasks);
+  const { tasks, searchQuery } = useAppSelector(state => state.tasks);
+  const { tagSelected } = useAppSelector(state => state.tag);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [holidaysData, setHolidaysData] = useState<Holiday[]>([]);
   const [lists, setLists] = useState<DayListItem[]>([]);
 
   useEffect(() => {
-    // const getHolidaysData = async () => {
-    //   const data = await getHolidaysForUpcomingWeek();
+    const getHolidaysData = async () => {
+      const data = await getHolidaysForUpcomingWeek();
 
-    //   setHolidaysData(data);
-    // }
+      setHolidaysData(data);
+    }
 
-    prepareListsData();
+    getHolidaysData();
+    prepareMonthData();
+  }, [tasks, month, searchQuery, tagSelected]);
 
-    // getHolidaysData();
-  }, [tasks]);
-
-  const compareDates = (taskDate: Date, cellDate: Date) => {
-    const taskAssigned = `${taskDate.getDate()}-${taskDate.getMonth()}`;
-    const currentDate = `${cellDate.getDate()}-${cellDate.getMonth()}`;
-
-    return taskAssigned === currentDate;
-  }
-
-  const prepareMonthDataToRender = () => {
+  const prepareMonthData = () => {
     const holidaysArray = holidaysData.flat();
 
-    const preparedData = month.map(day => {
-      const monthStr = (day.date.getMonth() + 1).toString().padStart(2, '0');
-      const dayStr = day.date.getDate().toString().padStart(2, '0');
-      const dateToCompare = `${day.date.getFullYear()}-${monthStr}-${dayStr}`;
-
-      const holidaysForDay = holidaysArray.filter(holiday => holiday.date === dateToCompare);
+    const preparedData: DayListItem[] = month.map(day => {
+      const holidays = holidaysArray.filter(holiday => compareDatesWithCast(holiday.date, day.date));
+      const todayTasks = tasks.filter(task => compareDates(task.assign_date as Date, day.date));
 
       return {
         ...day,
-        holidays: holidaysForDay
+        holidays: holidays,
+        items: todayTasks,
       };
     })
 
-    return preparedData;
+    if (searchQuery) {
+      preparedData.forEach((day: DayListItem) => {
+        day.items = day.items.filter(task => task.description.includes(searchQuery));
+      });
+    }
+
+    if (tagSelected) {
+      preparedData.forEach((day: DayListItem) => {
+        day.items = day.items.filter(task => task.tags.includes(tagSelected));
+      });
+    }
+
+    setLists(preparedData);
   };
 
-  const monthWithHolidays = prepareMonthDataToRender();
-
-  const prepareListsData = () => {
-    let listsData: DayListItem[] = [];
-
-    listsData = monthWithHolidays.map(day => {
-      const tasksForToday: Task[] = [];
-
-      tasks.map((task: Task) => {
-        if (compareDates(task.assign_date as Date , day.date)) {
-          tasksForToday.push(task);
-        }
-      })
-
-      day.items = tasksForToday;
-
-      return day;
-    })
-
-    setLists(listsData);
-  };
-
-
-  const onDragEnd = (result) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onDragEnd = (result: any) => {
     const { source, destination } = result;
     if (!destination) return;
 
+    const sourceListIndex = lists.findIndex((list) => list.id === source.droppableId);
     const sourceList = lists.find((list) => list.id === source.droppableId);
-    const destinationList = lists.find(
-      (list) => list.id === destination.droppableId
-    );
-    const [removed] = sourceList.items.splice(source.index, 1);
-    destinationList.items.splice(destination.index, 0, removed);
+    const destinationList = lists.find((list) => list.id === destination.droppableId);
+
+    const draggedItem = lists[sourceListIndex].items[source.index];
+
+    if (sourceList?.id !== destinationList?.id) {
+      const taskWithNewDate = {
+        ...draggedItem,
+        assign_date: destinationList?.date,
+      };
+
+      dispatch(updateTask(taskWithNewDate))
+    }
+
+    if (sourceList) {
+      const [removed] = sourceList.items.splice(source.index, 1);
+      destinationList?.items.splice(destination.index, 0, removed);
+    }
 
     setLists([...lists]);
   };
@@ -103,15 +99,11 @@ export const CalendarView = () => {
       <WeekdaysBar />
 
       <CalendarGrid>
-        <ReorderableList lists={lists} onDragEnd={onDragEnd} setIsModalOpen={setIsModalOpen} />
-        {/* {monthWithHolidays.map(item => (
-          <CalendarItem
-            key={item.id}
-            item={item}
-            setIsModalOpen={setIsModalOpen}
-            holidays={item.holidays}
-          />
-        ))} */}
+        <ReorderableList
+          lists={lists}
+          onDragEnd={onDragEnd}
+          setIsModalOpen={setIsModalOpen}
+        />
       </CalendarGrid>
     </>
   )

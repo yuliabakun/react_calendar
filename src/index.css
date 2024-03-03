@@ -8,8 +8,12 @@ body {
   min-height: 100vh;
 }
 
+ul, li {
+  list-style: none;
+}
+
 :root {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-style: normal;
   background-color: #EEEFF1;
 }

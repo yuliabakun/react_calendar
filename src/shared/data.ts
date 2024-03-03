@@ -5,6 +5,7 @@ export const weekdaysFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursd
 
 export const January = 0;
 export const December = 11;
+export const CalendarYear = 2024;
 
 export const mockedTags = [
   { id: '1', name: 'Work', color: '#60BE50' },

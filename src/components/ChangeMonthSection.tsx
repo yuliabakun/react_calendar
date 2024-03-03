@@ -8,11 +8,6 @@ const Section = styled.section`
   align-items: center;
 `;
 
-const Title = styled.h3`
-  font-size: 18px;
-  margin-right: 20px;
-`;
-
 const MonthName = styled.p`
   width: 120px;
   text-align: center;
@@ -32,9 +27,6 @@ export const ChangeMonthSection = () => {
 
   return (
     <Section>
-      <Title>Calendar 2024</Title>
-
-      <Section>
         <Button
           type='button'
           disabled={monthVisible === January}
@@ -52,7 +44,6 @@ export const ChangeMonthSection = () => {
         >
           {'>'}
         </Button>
-      </Section>
     </Section>
   );
 };

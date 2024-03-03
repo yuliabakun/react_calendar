@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Tag } from '../shared/types';
+import { TagItemProps } from '../shared/types';
 
 interface TagProps {
   color: string,
@@ -12,11 +12,7 @@ const TagContainer = styled.div<TagProps>`
   border-radius: 5px;
 `;
 
-type Props = {
-  tag: Tag,
-}
-
-export const TagItem: React.FC<Props> = ({ tag }) => {
+export const TagItem: React.FC<TagItemProps> = ({ tag }) => {
   return (
     <TagContainer color={tag.color} />
   )

@@ -21,8 +21,8 @@ function App() {
 
       <PDFExport
         ref={pdfExportComponent}
-        paperSize='auto'
         margin={20}
+        paperSize='auto'
         fileName={`Calendar for ${monthArray[monthVisible]} 2024`}
       >
         <CalendarView />

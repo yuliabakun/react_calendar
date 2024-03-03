@@ -2,9 +2,10 @@ import { FormEvent, useState } from 'react';
 import ReactDom from 'react-dom';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../shared/globalState/hooks';
-import { Task } from '../shared/types';
+import { AddTaskProps, Task } from '../shared/types';
 import { addNewTask } from '../shared/globalState/features/taskSlice';
 import { getDateToRender } from '../shared/helpers';
+import { accentButtonOrange, buttonSecondary } from '../shared/styles';
 
 const Overlay = styled.div`
 position: fixed;
@@ -32,17 +33,12 @@ const ModalTopbar = styled.div`
   margin-bottom: 20px;
 `;
 
-interface ButtonProps {
-  color?: string,
-}
+const ActiveButton = styled.button`
+  ${accentButtonOrange}
+`;
 
-const Button = styled.button<ButtonProps>`
-  padding: 8px 15px;
-  margin-right: 10px;
-  background-color: ${props => props.color || '#EBEBEB'};
-  border: 1px solid #EBEBEB;
-  cursor: pointer;
-  transition: transform 0.5s ease;
+const Button = styled.button`
+  ${buttonSecondary}
 `;
 
 const Form = styled.form`
@@ -91,12 +87,7 @@ const ErrorMessage = styled.p`
   margin-bottom: 10px;
 `;
 
-type Props = {
-  open: boolean,
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-}
-
-export const AddTaskModal: React.FC<Props> = ({ open, setIsModalOpen }) => {
+export const AddTaskModal: React.FC<AddTaskProps> = ({ open, setIsModalOpen }) => {
   const modalRoot = document.getElementById('modal-root') as HTMLElement;
   const { tagsCreated } = useAppSelector(state => state.tag);
   const { selectedDate } = useAppSelector(state => state.tasks);
@@ -121,7 +112,7 @@ export const AddTaskModal: React.FC<Props> = ({ open, setIsModalOpen }) => {
       dispatch(addNewTask(newTask));
       setIsModalOpen(false);
 
-      setTask({ description: '', assign_date: null, tags: []});
+      setTask({ description: '', assign_date: null, tags: [] });
     } else {
       setError(true);
     }
@@ -150,7 +141,9 @@ export const AddTaskModal: React.FC<Props> = ({ open, setIsModalOpen }) => {
           <Button onClick={() => {
             setError(false);
             setIsModalOpen(false);
-          }}>Close</Button>
+          }}>
+            Close
+          </Button>
         </ModalTopbar>
 
         {error && <ErrorMessage>Task description is required!</ErrorMessage>}
@@ -193,9 +186,9 @@ export const AddTaskModal: React.FC<Props> = ({ open, setIsModalOpen }) => {
             Cancel
           </Button>
 
-          <Button onClick={(event) => saveTask(event)} color='#FD9F01'>
+          <ActiveButton onClick={(event) => saveTask(event)} color='#cb8b1c'>
             Save Task
-          </Button>
+          </ActiveButton>
         </ActionsBar>
       </Modal>
     </>, modalRoot

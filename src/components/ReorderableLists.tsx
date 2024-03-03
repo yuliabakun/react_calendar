@@ -1,10 +1,15 @@
-import React from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { CalendarItem } from './CalendarItem';
 import { TaskItem } from './TaskItem';
+import { ReorderableListProps } from '../shared/types';
 
-const ReorderableList = ({ lists, onDragEnd, setIsModalOpen }) => {
-  const handleDragEnd = (result) => {
+export const ReorderableList: React.FC<ReorderableListProps> = ({
+  lists,
+  onDragEnd,
+  setIsModalOpen,
+}) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleDragEnd = (result: any) => {
     onDragEnd(result);
   };
 
@@ -14,16 +19,24 @@ const ReorderableList = ({ lists, onDragEnd, setIsModalOpen }) => {
         <CalendarItem item={list} setIsModalOpen={setIsModalOpen}>
           <Droppable key={index} droppableId={list.id}>
             {(provided) => (
-              <ul {...provided.droppableProps} ref={provided.innerRef} style={{ height: '80%' }}>
+              <ul
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                style={{ height: '80%' }}
+              >
                 {list.items.map((item, itemIndex) => (
-                  <Draggable key={item.id} draggableId={item.id} index={itemIndex}>
+                  <Draggable
+                    key={item.id}
+                    draggableId={item.id}
+                    index={itemIndex}
+                  >
                     {(provided) => (
                       <li
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
                       >
-                        <TaskItem task={item} onTaskDelete={() => { }} />
+                        <TaskItem task={item} />
                       </li>
                     )}
                   </Draggable>
@@ -37,5 +50,3 @@ const ReorderableList = ({ lists, onDragEnd, setIsModalOpen }) => {
     </DragDropContext>
   );
 };
-
-export default ReorderableList;

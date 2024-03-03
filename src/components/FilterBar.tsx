@@ -4,24 +4,13 @@ import { useAppDispatch, useAppSelector } from '../shared/globalState/hooks';
 import { setSearchQuery } from '../shared/globalState/features/taskSlice';
 import { setTagSelected } from '../shared/globalState/features/tagsSlice';
 import icon from '../shared/assets/icon-plus-gray.svg';
+import { inputStyles } from '../shared/styles';
+import { FilterBarProps } from '../shared/types';
 
 const Section = styled.section`
   display: flex;
   align-items: center;
   gap: 10px;
-`;
-
-const inputStyles = `
-  width: 180px;
-  padding: 10px;
-  background: #EFEFEE4C;
-  box-shadow: 0 4px 30px #00000019;
-  border: 1px solid #E9E2D64C;
-  border-radius: 5px;
-
-  &:active, &:focus {
-    outline: none;
-  }
 `;
 
 const Search = styled.input`
@@ -75,12 +64,7 @@ const Icon = styled.img<IconProps>`
     `}
 `;
 
-type Props = {
-  isBarOpen: boolean,
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-};
-
-export const FilterBar: React.FC<Props> = ({ isBarOpen, setIsOpen }) => {
+export const FilterBar: React.FC<FilterBarProps> = ({ isBarOpen, setIsOpen }) => {
   const dispatch = useAppDispatch();
   const { tagsCreated } = useAppSelector(state => state.tag);
   const [query, setQuery] = useState('');
@@ -111,7 +95,7 @@ export const FilterBar: React.FC<Props> = ({ isBarOpen, setIsOpen }) => {
       />
 
       <Dropdown
-        id="tags-select"
+        id='tags-select'
         onChange={(event) => dispatch(setTagSelected(event.target.value))}
       >
         <option value=''>Filter by tag</option>
