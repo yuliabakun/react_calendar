@@ -4,10 +4,11 @@ import { ChangeMonthSection } from './ChangeMonthSection';
 import { useState } from 'react';
 import { AddTagForm } from './AddTagForm';
 import { useAppDispatch } from '../shared/globalState/hooks';
-import { HeaderProps } from '../shared/types';
+import { HeaderProps, Task } from '../shared/types';
 import { addTasksFromFile } from '../shared/globalState/features/taskSlice';
 import { ExportImportBar } from './ExportImportBar';
 import { getTasksFromFile } from '../shared/helpers';
+import { addTagsFromImportFile } from '../shared/globalState/features/tagsSlice';
 
 const HeaderContainer = styled.header`
   width: 100%;
@@ -30,6 +31,9 @@ export const Header: React.FC<HeaderProps> = ({ handlePdfExport }) => {
       try {
         const jsonTasks = getTasksFromFile(event.target?.result);
 
+        const tagsFromFile = jsonTasks.map((task: Task) => task.tags);
+
+        dispatch(addTagsFromImportFile(tagsFromFile));
         dispatch(addTasksFromFile(jsonTasks));
       } catch (error) {
         console.error('Error parsing JSON file:', error);
