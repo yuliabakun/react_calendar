@@ -2,6 +2,29 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { CalendarItem } from './CalendarItem';
 import { TaskItem } from './TaskItem';
 import { ReorderableListProps } from '../shared/types';
+import styled from 'styled-components';
+
+const TasksList = styled.ul`
+  height: 80%;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #EEEFF1; 
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #adaaaa; 
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+`;
 
 export const ReorderableList: React.FC<ReorderableListProps> = ({
   lists,
@@ -19,10 +42,10 @@ export const ReorderableList: React.FC<ReorderableListProps> = ({
         <CalendarItem item={list} setIsModalOpen={setIsModalOpen}>
           <Droppable key={index} droppableId={list.id}>
             {(provided) => (
-              <ul
+              <TasksList
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                style={{ height: '80%' }}
+                style={{ height: '80%', overflowY: 'auto' }}
               >
                 {list.items.map((item, itemIndex) => (
                   <Draggable
@@ -42,7 +65,7 @@ export const ReorderableList: React.FC<ReorderableListProps> = ({
                   </Draggable>
                 ))}
                 {provided.placeholder}
-              </ul>
+              </TasksList>
             )}
           </Droppable>
         </CalendarItem>
