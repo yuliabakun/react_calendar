@@ -2,11 +2,12 @@ import styled from 'styled-components';
 import { FilterBar } from './FilterBar';
 import { ChangeMonthSection } from './ChangeMonthSection';
 import { useState } from 'react';
-import { AddTagBar } from './AddTagBar';
+import { AddTagForm } from './AddTagForm';
 import { useAppDispatch } from '../shared/globalState/hooks';
-import { HeaderProps, Task } from '../shared/types';
+import { HeaderProps } from '../shared/types';
 import { addTasksFromFile } from '../shared/globalState/features/taskSlice';
 import { ExportImportBar } from './ExportImportBar';
+import { getTasksFromFile } from '../shared/helpers';
 
 const HeaderContainer = styled.header`
   width: 100%;
@@ -15,30 +16,19 @@ const HeaderContainer = styled.header`
   align-items: center;
   justify-content: space-between;
   background-color: #FD9F01;
+  position: relative;
 `;
 
 export const Header: React.FC<HeaderProps> = ({ handlePdfExport }) => {
   const dispatch = useAppDispatch();
   const [isBarOpen, setIsBarOpen] = useState(false);
 
-  const handleJsonExport = (data: Task[], type: string) => {
-    const dataToLoad = JSON.stringify(data);
-
-    const blob = new Blob([dataToLoad], { type });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Json tasks';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  }
-
   const handleJsonImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
 
     fileReader.onload = (event) => {
       try {
-        const jsonTasks = JSON.parse(event.target?.result as string, dateReviver);
+        const jsonTasks = getTasksFromFile(event.target?.result);
 
         dispatch(addTasksFromFile(jsonTasks));
       } catch (error) {
@@ -52,30 +42,18 @@ export const Header: React.FC<HeaderProps> = ({ handlePdfExport }) => {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const dateReviver = (key: any, value: any) => {
-    if (key === 'assign_date') {
-      return new Date(value);
-    }
-
-    return value;
-  }
-
   return (
-    <>
-      <HeaderContainer>
-        <ExportImportBar
-          handleJsonExport={handleJsonExport}
-          handleJsonImport={handleJsonImport}
-          handlePdfExport={handlePdfExport}
-        />
+    <HeaderContainer>
+      <ExportImportBar
+        handleJsonImport={handleJsonImport}
+        handlePdfExport={handlePdfExport}
+      />
 
-        <ChangeMonthSection />
+      <ChangeMonthSection />
 
-        <FilterBar isBarOpen={isBarOpen} setIsOpen={setIsBarOpen} />
-      </HeaderContainer>
+      <FilterBar isBarOpen={isBarOpen} setIsOpen={setIsBarOpen} />
 
-      {isBarOpen && <AddTagBar setIsOpen={setIsBarOpen} />}
-    </>
+      {isBarOpen && <AddTagForm isOpen={isBarOpen} setIsOpen={setIsBarOpen} />}
+    </HeaderContainer>
   )
 }

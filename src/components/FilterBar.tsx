@@ -13,8 +13,14 @@ const Section = styled.section`
   gap: 10px;
 `;
 
-const Search = styled.input`
-  ${inputStyles}
+const SearchInput = styled.input`
+  background: none;
+  border: none;
+  width: 80%;
+
+  &:active, &:focus {
+    outline: none;
+  }
 
   &::placeholder {
     font-family: 'Montserrat', sans-serif;
@@ -64,6 +70,20 @@ const Icon = styled.img<IconProps>`
     `}
 `;
 
+const ButtonContainer = styled.span`  
+  ${inputStyles}
+  display: flex;
+  gap: 5px;
+`;
+
+const ClearButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+`;
+
 export const FilterBar: React.FC<FilterBarProps> = ({ isBarOpen, setIsOpen }) => {
   const dispatch = useAppDispatch();
   const { tagsCreated } = useAppSelector(state => state.tag);
@@ -84,15 +104,26 @@ export const FilterBar: React.FC<FilterBarProps> = ({ isBarOpen, setIsOpen }) =>
 
   return (
     <Section>
-      <Search
-        id='search-tasks-by-name'
-        type='text'
-        placeholder='Find a task'
-        value={query}
-        onChange={(event) => setQuery(event.target.value)}
-        onBlur={() => dispatch(setSearchQuery(query))}
-        onKeyUp={handleSearchKeyUp}
-      />
+      <ButtonContainer>
+        <SearchInput
+          id='search-tasks-by-name'
+          type='text'
+          placeholder='Find a task'
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          onBlur={() => dispatch(setSearchQuery(query))}
+          onKeyUp={handleSearchKeyUp}
+        />
+
+        {query && (
+          <ClearButton onClick={() => {
+            setQuery('');
+            dispatch(setSearchQuery(''));
+          }}>
+            Clear
+          </ClearButton>
+        )}
+      </ButtonContainer>
 
       <Dropdown
         id='tags-select'

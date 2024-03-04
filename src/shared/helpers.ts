@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { monthArray } from './data';
 import { weekdaysFull } from './data';
+import { Task } from './types';
 
 export const generateMonthToRender = (month: number, year: number) => {
   const days = [];
@@ -30,7 +31,7 @@ export const generateMonthToRender = (month: number, year: number) => {
   }
 
   return days;
-};
+}
 
 export const getDateToRender = (date: Date | null) => {
   if (date) {
@@ -38,14 +39,14 @@ export const getDateToRender = (date: Date | null) => {
   } else {
     return '';
   }
-};
+}
 
 export const compareDates = (taskDate: Date, cellDate: Date) => {
   const taskAssigned = `${taskDate.getDate()}-${taskDate.getMonth()}`;
   const currentDate = `${cellDate.getDate()}-${cellDate.getMonth()}`;
 
   return taskAssigned === currentDate;
-};
+}
 
 export const compareDatesWithCast = (holidayDate: string, taskDate: Date) => {
   const monthStr = (taskDate.getMonth() + 1).toString().padStart(2, '0');
@@ -53,4 +54,30 @@ export const compareDatesWithCast = (holidayDate: string, taskDate: Date) => {
   const dateToCompare = `${taskDate.getFullYear()}-${monthStr}-${dayStr}`;
 
   return dateToCompare === holidayDate;
-};
+}
+
+export const handleJsonExport = (data: Task[], type: string) => {
+  const dataToLoad = JSON.stringify(data);
+
+  const blob = new Blob([dataToLoad], { type });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Json tasks';
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const dateReviver = (key: any, value: any) => {
+  if (key === 'assignDate') {
+    return new Date(value);
+  }
+
+  return value;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getTasksFromFile = (data: any) => {
+  return JSON.parse(data, dateReviver);
+}

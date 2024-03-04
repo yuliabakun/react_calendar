@@ -20,6 +20,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 3px;
+  cursor: move;
 `;
 
 const TagsContainer = styled.div`
@@ -33,10 +35,11 @@ const ControlButton = styled.button`
   background: none;
   cursor: pointer;
   color: #929598;
+  padding: 5px;
 
   &:hover {
-    color: black;
-    background-color: #E9E2D64C;
+    background-color: #9795934b;
+    border-radius: 5px;
   }
 `;
 
@@ -59,6 +62,29 @@ const Icon = styled.img`
   height: 10px;
 `;
 
+const EditInput = styled.input`
+  padding: 10px;
+`;
+
+const ButtonsContainer = styled.span`
+  display: flex;
+  gap: 5px;
+  justify-content: space-evenly;
+`;
+
+const Button = styled.button`
+  padding: 1px;
+  border: none;
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: #E3E4E6;
+
+  &:hover {
+    background-color: #FD9F01;
+  }
+`;
+
 export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   const dispatch = useAppDispatch();
   const { tagsCreated } = useAppSelector(state => state.tag);
@@ -69,12 +95,12 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const pressedKey = event.key;
 
-    if (pressedKey === 'Enter' || pressedKey === 'Escape') {
-      handleBlur();
-    }
+    if (pressedKey === 'Enter') { handleSave() }
+
+    if (pressedKey === 'Escape') { setIsEditing(false) }
   }
 
-  const handleBlur = () => {
+  const handleSave = () => {
     setIsEditing(false);
 
     const updatedTask = {
@@ -103,13 +129,17 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
     <>
       {isEditing ? (
         <Container>
-          <input
+          <EditInput
             type='text'
             value={text}
             onChange={(event) => setText(event.target.value)}
-            onBlur={handleBlur}
             onKeyUp={(event) => handleKeyUp(event)}
           />
+
+          <ButtonsContainer>
+            <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+            <Button onClick={handleSave}>Save</Button>
+          </ButtonsContainer>
         </Container>
       ) : (
         <Container

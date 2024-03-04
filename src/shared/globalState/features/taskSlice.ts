@@ -48,7 +48,12 @@ const taskSlice = createSlice({
       state.tasks = newTasks;
     },
     addTasksFromFile: (state, action) => {
-      state.tasks = [...state.tasks, ...action.payload];
+      const currentTasksIds = state.tasks.map(task => task.id);
+      const tasksFromFile = action.payload;
+
+      const tasksToAdd = tasksFromFile.filter((task: Task) => !currentTasksIds.includes(task.id));
+
+      state.tasks = [...state.tasks, ...tasksToAdd];
     },
     setSelectedDate: (state, action) => {
       state.selectedDate = action.payload;

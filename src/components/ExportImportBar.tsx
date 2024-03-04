@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { ExportImportBarProps } from '../shared/types';
 import { useAppSelector } from '../shared/globalState/hooks';
 import { inputStyles } from '../shared/styles';
+import { handleJsonExport } from '../shared/helpers';
 
 const ActionsBar = styled.div`
   display: flex;
@@ -34,7 +35,6 @@ const FileInput = styled.input`
 `;
 
 export const ExportImportBar: React.FC<ExportImportBarProps> = ({
-  handleJsonExport,
   handleJsonImport,
   handlePdfExport,
 }) => {

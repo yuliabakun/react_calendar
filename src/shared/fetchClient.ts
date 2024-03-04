@@ -3,7 +3,7 @@ const BASE_URL_US = 'https://date.nager.at/api/v3/PublicHolidays/2024/US';
 const BASE_URL_DE = 'https://date.nager.at/api/v3/PublicHolidays/2024/DE';
 const BASE_URL_FR = 'https://date.nager.at/api/v3/PublicHolidays/2024/FR';
 
-export const getHolidaysForUpcomingWeek = async () => {
+export const getHolidays = async () => {
   try {
     const responses = await Promise.all([
       fetch(BASE_URL_UA),

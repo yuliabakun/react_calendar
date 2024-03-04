@@ -7,7 +7,7 @@ export type Tag = {
 export type Task = {
   id: string,
   description: string,
-  assign_date: Date | null,
+  assignDate: Date | null,
   tags: string[],
 }
 
@@ -40,7 +40,8 @@ export type DayListItem = {
 }
 
 // components props
-export type AddTagBarProps = {
+export type AddTagFormProps = {
+  isOpen: boolean,
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
@@ -54,7 +55,6 @@ export type HeaderProps = {
 }
 
 export type ExportImportBarProps = {
-  handleJsonExport: (data: Task[], type: string) => void,
   handleJsonImport: (event: React.ChangeEvent<HTMLInputElement>) => void,
   handlePdfExport: () => void,
 }

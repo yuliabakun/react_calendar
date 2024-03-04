@@ -27,23 +27,23 @@ export const ChangeMonthSection = () => {
 
   return (
     <Section>
-        <Button
-          type='button'
-          disabled={monthVisible === January}
-          onClick={() => dispatch(changeMonthVisible(monthVisible - 1))}
-        >
-          {'<'}
-        </Button>
+      <Button
+        type='button'
+        disabled={monthVisible === January}
+        onClick={() => dispatch(changeMonthVisible(monthVisible - 1))}
+      >
+        {'<'}
+      </Button>
 
-        <MonthName>{monthArray[monthVisible]}</MonthName>
+      <MonthName>{monthArray[monthVisible]}</MonthName>
 
-        <Button
-          type='button'
-          disabled={monthVisible === December}
-          onClick={() => dispatch(changeMonthVisible(monthVisible + 1))}
-        >
-          {'>'}
-        </Button>
+      <Button
+        type='button'
+        disabled={monthVisible === December}
+        onClick={() => dispatch(changeMonthVisible(monthVisible + 1))}
+      >
+        {'>'}
+      </Button>
     </Section>
-  );
-};
+  )
+}

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../shared/globalState/hooks';
-import { getHolidaysForUpcomingWeek } from '../shared/fetchClient';
+import { getHolidays } from '../shared/fetchClient';
 import { Holiday, DayListItem } from '../shared/types';
 import { AddTaskModal } from './AddTaskModal';
 import { WeekdaysBar } from './WeekdaysBar';
@@ -27,21 +27,24 @@ export const CalendarView = () => {
 
   useEffect(() => {
     const getHolidaysData = async () => {
-      const data = await getHolidaysForUpcomingWeek();
+      const data = await getHolidays();
 
       setHolidaysData(data);
     }
 
     getHolidaysData();
-    prepareMonthData();
-  }, [tasks, month, searchQuery, tagSelected]);
+  }, []);
 
-  const prepareMonthData = () => {
+  useEffect(() => {
+    prepareMonthData();
+  }, [month, searchQuery, tagSelected, tasks])
+
+  const prepareMonthData = useCallback(() => {
     const holidaysArray = holidaysData.flat();
 
     const preparedData: DayListItem[] = month.map(day => {
       const holidays = holidaysArray.filter(holiday => compareDatesWithCast(holiday.date, day.date));
-      const todayTasks = tasks.filter(task => compareDates(task.assign_date as Date, day.date));
+      const todayTasks = tasks.filter(task => compareDates(task.assignDate as Date, day.date));
 
       return {
         ...day,
@@ -51,8 +54,11 @@ export const CalendarView = () => {
     })
 
     if (searchQuery) {
+      const normalizedQuery = searchQuery.toLowerCase();
+
       preparedData.forEach((day: DayListItem) => {
-        day.items = day.items.filter(task => task.description.includes(searchQuery));
+        day.items = day.items.filter(task =>
+          task.description.toLowerCase().includes(normalizedQuery));
       });
     }
 
@@ -63,10 +69,10 @@ export const CalendarView = () => {
     }
 
     setLists(preparedData);
-  };
+  }, [month, searchQuery, tagSelected, tasks, holidaysData]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onDragEnd = (result: any) => {
+  const onDragEnd = useCallback((result: any) => {
     const { source, destination } = result;
     if (!destination) return;
 
@@ -79,7 +85,7 @@ export const CalendarView = () => {
     if (sourceList?.id !== destinationList?.id) {
       const taskWithNewDate = {
         ...draggedItem,
-        assign_date: destinationList?.date,
+        assignDate: destinationList?.date,
       };
 
       dispatch(updateTask(taskWithNewDate))
@@ -91,7 +97,7 @@ export const CalendarView = () => {
     }
 
     setLists([...lists]);
-  };
+  }, [dispatch, lists]);
 
   return (
     <>

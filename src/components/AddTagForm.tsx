@@ -3,17 +3,21 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { useAppDispatch } from '../shared/globalState/hooks';
 import { addTag } from '../shared/globalState/features/tagsSlice';
-import { AddTagBarProps } from '../shared/types';
-import { accentButtonOrange, inputStyles } from '../shared/styles';
+import { AddTagFormProps } from '../shared/types';
+import { accentButtonOrange, buttonSecondary, inputStyles } from '../shared/styles';
 
 const Section = styled.section`
-  margin: 10px 40px;
-  display: flex;
-  justify-content: right;
+  position: absolute;
+  top: 100px;
+  right: 20px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
 `;
 
 const Form = styled.form`
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
 `;
@@ -40,7 +44,17 @@ const AddButton = styled.button`
   ${accentButtonOrange}
 `;
 
-export const AddTagBar: React.FC<AddTagBarProps> = ({ setIsOpen }) => {
+const ButtonsContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  justify-content: space-evenly;
+`;
+
+const Button = styled.button`
+  ${buttonSecondary}
+`;
+
+export const AddTagForm: React.FC<AddTagFormProps> = ({ isOpen, setIsOpen }) => {
   const dispatch = useAppDispatch();
   const [tag, setTag] = useState({ name: '', color: '' });
   const [error, setError] = useState(false);
@@ -62,6 +76,8 @@ export const AddTagBar: React.FC<AddTagBarProps> = ({ setIsOpen }) => {
       setError(true);
     }
   };
+
+  if (!isOpen) { return null }
 
   return (
     <Section>
@@ -87,7 +103,10 @@ export const AddTagBar: React.FC<AddTagBarProps> = ({ setIsOpen }) => {
           onChange={(event) => setTag({ ...tag, color: event.target.value })}
         />
 
-        <AddButton type='submit' onClick={handleAddTag}>Create</AddButton>
+        <ButtonsContainer>
+          <AddButton type='submit' onClick={handleAddTag}>Create</AddButton>
+          <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+        </ButtonsContainer>
       </Form>
     </Section>
   )

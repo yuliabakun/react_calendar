@@ -95,7 +95,7 @@ export const AddTaskModal: React.FC<AddTaskProps> = ({ open, setIsModalOpen }) =
   const [error, setError] = useState(false);
   const [task, setTask] = useState<Omit<Task, 'id'>>({
     description: '',
-    assign_date: null,
+    assignDate: null,
     tags: [],
   });
 
@@ -105,14 +105,14 @@ export const AddTaskModal: React.FC<AddTaskProps> = ({ open, setIsModalOpen }) =
 
     const newTask: Omit<Task, 'id'> = {
       ...task,
-      assign_date: selectedDate,
+      assignDate: selectedDate,
     };
 
-    if (newTask.description && newTask.assign_date) {
+    if (newTask.description && newTask.assignDate) {
       dispatch(addNewTask(newTask));
       setIsModalOpen(false);
 
-      setTask({ description: '', assign_date: null, tags: [] });
+      setTask({ description: '', assignDate: null, tags: [] });
     } else {
       setError(true);
     }
