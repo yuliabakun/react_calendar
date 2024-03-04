@@ -1,30 +1,18 @@
-# React + TypeScript + Vite
+# React Calendar with Drag and Drop
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
+You can check out the live [DEMO](https://yuliabakun.github.io/react_calendar/).
+This calendar application offers the following features:
 
-Currently, two official plugins are available:
+* Drag and Drop: Tasks can be reassigned to another day or reordered within the list using intuitive drag-and-drop functionality.
+* Export/Import: Users can export the calendar as a PDF or JSON file and import JSON files to restore previous calendar states.
+* Filtering: Tasks can be filtered by tag and by name, allowing users to easily find and organize their tasks.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technologies Used
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+* React: A JavaScript library for building user interfaces.
+* TypeScript: A typed superset of JavaScript that compiles to plain JavaScript.
+* Vite: A next-generation frontend tooling system that enhances the development experience for web projects.
+* Styled-components: A CSS-in-JS library for styling React components with scoped styles.
+* Redux Toolkit: State management library for efficient Redux development.
+* React Beautiful DnD: A beautiful and accessible drag-and-drop library for React.
