@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 import { Task } from '../../types';
+import { mockedTasks } from '../../data';
 
 interface InitialState {
   tasks: Task[],
@@ -9,7 +10,7 @@ interface InitialState {
 }
 
 const initialState: InitialState = {
-  tasks: [],
+  tasks: mockedTasks,
   selectedDate: null,
   searchQuery: '',
 }
