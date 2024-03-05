@@ -37,7 +37,7 @@ export const CalendarView = () => {
 
   useEffect(() => {
     prepareMonthData();
-  }, [month, searchQuery, tagSelected, tasks])
+  }, [month, searchQuery, tagSelected, tasks, holidaysData])
 
   const prepareMonthData = useCallback(() => {
     const holidaysArray = holidaysData.flat();
